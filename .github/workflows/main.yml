@@ -1,0 +1,50 @@
+name: starcard angular 11
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  build:
+    # using Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2 #this installs node and npm for us
+        with:
+          node-version: "12.x"
+
+      - uses: actions/cache@v1 # this allows for re-using node_modules caching, making builds a bit faster.
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm install
+      - run: npm install -g @angular/cli@11
+      - run: node web3-patch.js
+      - run: ng build --prod
+     
+      #- run: npm install -g @angular/cli@11.0
+      #- run: npm ls -g --depth=0
+      #- run: node patch.js
+
+ 
+   
+
+      #- run: npm audit fix --force --production
+      #- run: ng build --prod
+
+      #- name: copy file via ssh key
+      #  uses: appleboy/scp-action@master
+       # env:
+        #  HOST: ekta-nft-production-lb-2142488433.ap-northeast-2.elb.amazonaws.com
+        #  USERNAME: ubuntu
+         # PORT:  22
+         # KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        #with:
+         # source: "./dist"
+          #target: "/var/www/html/"
+          #strip_components: 2  
